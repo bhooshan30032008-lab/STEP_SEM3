@@ -1,29 +1,16 @@
 package STEP_SEM3.Assignment_Problems;
+import java.util.Arrays;
+
 public class Problems_1 {
-
-
-public static class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        // Nested loops to check every unique pair (i, j)
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = i + 1; j < nums.length; j++) {
-                if (nums[i] + nums[j] == target) {
-                    return new int[]{i, j}; //
-                }
-            }
-        }
-        return new int[]{};
+    // Directly modifies the caller's array in-place[cite: 1]
+    public static void applyMultipliers(double[] playerScores, int captainIndex, int viceCaptainIndex) { //[cite: 1]
+        playerScores[captainIndex] *= 2.0;       // Captain multiplier: 2x[cite: 1]
+        playerScores[viceCaptainIndex] *= 1.5;   // Vice-Captain multiplier: 1.5x[cite: 1]
     }
-}
-public static void main(String[] args) {
-    Solution solution = new Solution();
-    int[] nums = {2, 7, 11, 15};
-    int target = 9;
-    int[] result = solution.twoSum(nums, target);
-    if (result.length == 2) {
-        System.out.println("Indices: " + result[0] + ", " + result[1]);
-    } else {
-        System.out.println("No solution found.");
+
+    public static void main(String[] args) {
+        double[] scores = {40.0, 55.0, 30.0, 62.0};
+        applyMultipliers(scores, 1, 3);
+        System.out.println(Arrays.toString(scores)); // Output: [40.0, 110.0, 30.0, 93.0][cite: 1]
     }
-}
 }

@@ -1,16 +1,18 @@
 package STEP_SEM3.Practice_Problems;
 
+import java.util.Arrays;
+
 public class Problems_1 {
-    public static int[] twoSum(int[] nums, int target) {
-        // Iterate through each element with outer loop
-        for (int i = 0; i < nums.length; i++) {
-            // Check every subsequent element to avoid reusing the same index
-            for (int j = i + 1; j < nums.length; j++) {
-                if (nums[i] + nums[j] == target) {
-                    return new int[]{i, j};
-                }
-            }
+    public static void curveScores(int[] scores, int bonus) {
+        if (scores == null) return;
+        for (int i = 0; i < scores.length; i++) {
+            scores[i] += bonus;
         }
-        return new int[]{};
+    }
+
+    public static void main(String[] args) {
+        int[] scores = {70, 85, 60};
+        curveScores(scores, 10);
+        System.out.println(Arrays.toString(scores)); // Output: [80, 95, 70]
     }
 }

@@ -1,35 +1,24 @@
 package STEP_SEM3.Practice_Problems;
 
 public class Problems_2 {
-    public static int maxProfit(int[] prices) {
-        if (prices == null || prices.length == 0) {
-            return 0;
-        }
+    public static String findDuplicateTeam(String[] teamNames) {
+        if (teamNames == null) return "No Duplicates Found";
 
-        int minPrice = prices[0];
-        int maxProfit = 0;
-
-        // Walk through the array once from left to right
-        for (int i = 1; i < prices.length; i++) {
-            // Calculate potential profit selling today
-            int currentProfit = prices[i] - minPrice;
-
-            // Update max profit seen so far
-            if (currentProfit > maxProfit) {
-                maxProfit = currentProfit;
-            }
-
-            // Update lowest purchase price seen so far
-            if (prices[i] < minPrice) {
-                minPrice = prices[i];
+        for (int i = 0; i < teamNames.length; i++) {
+            for (int j = i + 1; j < teamNames.length; j++) {
+                if (teamNames[i].equals(teamNames[j])) {
+                    return "Duplicate Found: " + teamNames[i];
+                }
             }
         }
-
-        return maxProfit;
+        return "No Duplicates Found";
     }
+
     public static void main(String[] args) {
-        int[] prices = {7, 1, 5, 3, 6, 4};
-        int profit = maxProfit(prices);
-        System.out.println("Maximum Profit: " + profit);
+        String[] list1 = {"ByteForce", "CodeCrafters", "ByteForce"};
+        System.out.println(findDuplicateTeam(list1)); // Output: Duplicate Found: ByteForce
+
+        String[] list2 = {"ByteForce", "CodeCrafters", "NullPointers"};
+        System.out.println(findDuplicateTeam(list2)); // Output: No Duplicates Found
     }
 }
