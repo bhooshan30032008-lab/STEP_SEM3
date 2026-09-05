@@ -1,19 +1,21 @@
 package STEP_SEM3.Practice_Problems;
 
 public class Problems_3 {
-   static  class LibraryCard {
-    String holderName;
-    int booksIssued;
-    boolean active;
-}
-
-public static class Main {
-    public static void main(String[] args) {
-        LibraryCard card = new LibraryCard();
-
-        System.out.println("Holder: " + card.holderName);
-        System.out.println("Books Issued: " + card.booksIssued);
-        System.out.println("Active: " + card.active);
+    public static boolean containsDuplicate(int[] nums) {
+        // Nested loops comparing every pair of positions
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                // If any two different indices hold the same value
+                if (nums[i] == nums[j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-}
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 3, 4, 5, 1}; // Example input with duplicates
+        boolean hasDuplicates = containsDuplicate(nums);
+        System.out.println("Contains duplicates: " + hasDuplicates);
+    }
 }

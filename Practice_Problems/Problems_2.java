@@ -1,25 +1,35 @@
 package STEP_SEM3.Practice_Problems;
 
 public class Problems_2 {
-   static  class HostelRoom {
-    String roomNo;
-    int occupied;
-}
+    public static int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
 
-public static class Main {
-    public static void main(String[] args) {
-        HostelRoom roomA = new HostelRoom();
-        roomA.roomNo = "C-101";
+        int minPrice = prices[0];
+        int maxProfit = 0;
 
-        HostelRoom roomB = new HostelRoom();
-        roomB.roomNo = "C-102";
+        // Walk through the array once from left to right
+        for (int i = 1; i < prices.length; i++) {
+            // Calculate potential profit selling today
+            int currentProfit = prices[i] - minPrice;
 
-        roomA.occupied++;
-        roomA.occupied++;
-        roomA.occupied++;
+            // Update max profit seen so far
+            if (currentProfit > maxProfit) {
+                maxProfit = currentProfit;
+            }
 
-        System.out.println("C101 -occupied: " + roomA.occupied);
-        System.out.println("C102 -occupied: " + roomB.occupied);
+            // Update lowest purchase price seen so far
+            if (prices[i] < minPrice) {
+                minPrice = prices[i];
+            }
+        }
+
+        return maxProfit;
     }
-}
+    public static void main(String[] args) {
+        int[] prices = {7, 1, 5, 3, 6, 4};
+        int profit = maxProfit(prices);
+        System.out.println("Maximum Profit: " + profit);
+    }
 }
