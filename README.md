@@ -56,3 +56,16 @@
 
 **Issues Faced:**
 * None
+
+
+## Date: 19-09-2026
+
+**Today's Work:**
+* Solved 3 class problems and 3 assignment problems on feature/session_6
+
+**Next Session Plan:**
+* Continue with next session's topic
+
+**Issues Faced:**
+* None
+
