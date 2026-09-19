@@ -1,23 +1,47 @@
 package STEP_SEM3.Assignment_Problems;
 
-public class Problems_2 {
-    // Nested-loop pairwise comparison without using Collections[cite: 1]
-    public static String findDuplicatePick(String[] playerNames) { //[cite: 1]
-        for (int i = 0; i < playerNames.length; i++) {
-            for (int j = i + 1; j < playerNames.length; j++) { //[cite: 1]
-                if (playerNames[i].equals(playerNames[j])) {
-                    return "Duplicate Found: " + playerNames[i]; //[cite: 1]
-                }
-            }
+class Problems_2 {
+    private double basicSalary;
+    private double bonus;
+
+    public Problems_2(double openingBasicSalary) {
+        if (openingBasicSalary < 0) {
+            System.out.println("Warning: Basic salary cannot be negative. Setting to 0.");
+            this.basicSalary = 0;
+        } else {
+            this.basicSalary = openingBasicSalary;
         }
-        return "No Duplicates Found"; //[cite: 1]
+        this.bonus = 0;
     }
 
-    public static void main(String[] args) {
-        String[] lineup1 = {"Kohli", "Bumrah", "Kohli", "Rohit"}; //[cite: 1]
-        System.out.println(findDuplicatePick(lineup1)); // Output: Duplicate Found: Kohli[cite: 1]
+    public void creditBonus(double amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid bonus amount: Amount must be greater than 0.");
+        } else {
+            this.bonus += amount;
+            System.out.println("Bonus credited: Rs " + amount);
+        }
+    }
 
-        String[] lineup2 = {"Kohli", "Bumrah", "Rohit"}; //[cite: 1]
-        System.out.println(findDuplicatePick(lineup2)); // Output: No Duplicates Found[cite: 1]
+    public void deductTax(double percent) {
+        if (percent < 0 || percent > 100) {
+            System.out.println("Invalid tax percentage: Must be between 0 and 100.");
+        } else {
+            this.basicSalary -= (this.basicSalary * percent / 100.0);
+            System.out.println("Tax deducted: " + (int) percent + "%");
+        }
+    }
+
+    public double getNetSalary() {
+        return basicSalary + bonus;
+    }
+
+
+
+    public static void main(String[] args) {
+        Problems_2 account = new Problems_2(50000);
+        account.creditBonus(5000);
+        account.deductTax(10);
+        System.out.println("Net salary: Rs " + account.getNetSalary());
     }
 }

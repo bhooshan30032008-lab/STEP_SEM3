@@ -1,16 +1,31 @@
 package STEP_SEM3.Assignment_Problems;
-import java.util.Arrays;
+class Problems_1 {
+    String title;
+    String author;
+    int copiesAvailable;
 
-public class Problems_1 {
-    // Directly modifies the caller's array in-place[cite: 1]
-    public static void applyMultipliers(double[] playerScores, int captainIndex, int viceCaptainIndex) { //[cite: 1]
-        playerScores[captainIndex] *= 2.0;       // Captain multiplier: 2x[cite: 1]
-        playerScores[viceCaptainIndex] *= 1.5;   // Vice-Captain multiplier: 1.5x[cite: 1]
+    public Problems_1(String title, String author, int copiesAvailable) {
+        this.title = title;
+        this.author = author;
+        this.copiesAvailable = copiesAvailable;
     }
 
+    public void printEntry() {
+        System.out.println(title + " by " + author + " " + copiesAvailable + " copies available");
+    }
+
+
+
     public static void main(String[] args) {
-        double[] scores = {40.0, 55.0, 30.0, 62.0};
-        applyMultipliers(scores, 1, 3);
-        System.out.println(Arrays.toString(scores)); // Output: [40.0, 110.0, 30.0, 93.0][cite: 1]
+        Problems_1[] books = {
+            new Problems_1("Clean Code", "Robert C. Martin", 3),
+            new Problems_1("Effective Java", "Joshua Bloch", 5),
+            new Problems_1("Refactoring", "Martin Fowler", 0),
+            new Problems_1("Design Patterns", "GoF", 2)
+        };
+
+        for (Problems_1 book : books) {
+            book.printEntry();
+        }
     }
 }

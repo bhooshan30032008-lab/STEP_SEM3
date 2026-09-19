@@ -1,32 +1,36 @@
 package STEP_SEM3.Practice_Problems;
 
-import java.util.Arrays;
+class Problems_3 {
+    String code;
+    String title;
+    int credits;
+    int labCredits;
 
-public class Problems_3 {
-    public static int[] findTopThreeScores(int[] scores) {
-        int first = Integer.MIN_VALUE;
-        int second = Integer.MIN_VALUE;
-        int third = Integer.MIN_VALUE;
+    // 4-argument constructor setting all fields
+    public Problems_3(String code, String title, int credits, int labCredits) {
+        this.code = code;
+        this.title = title;
+        this.credits = credits;
+        this.labCredits = labCredits;
+    }
 
-        for (int score : scores) {
-            if (score >= first) {
-                third = second;
-                second = first;
-                first = score;
-            } else if (score >= second) {
-                third = second;
-                second = score;
-            } else if (score > third) {
-                third = score;
-            }
-        }
+    // 3-argument constructor chaining to 4-argument constructor via this(...)
+    public Problems_3(String code, String title, int credits) {
+        this(code, title, credits, 0);
+    }
 
-        return new int[]{first, second, third};
+    // Calculates and returns total credits
+    public int totalCredits() {
+        return credits + labCredits;
     }
 
     public static void main(String[] args) {
-        int[] scores = {45, 82, 79, 90, 33, 90, 61};
-        int[] podium = findTopThreeScores(scores);
-        System.out.println(Arrays.toString(podium)); // Output: [90, 90, 82]
+        // Theory-only course using 3-argument constructor
+        Problems_3 theoryCourse = new Problems_3("21CSC201J", "Data Structures", 4);
+        System.out.println(theoryCourse.code + " total credits: " + theoryCourse.totalCredits());
+
+        // Integrated course with lab using 4-argument constructor
+        Problems_3 labCourse = new Problems_3("21CSC205L", "DSA Lab", 3, 1);
+        System.out.println(labCourse.code + " total credits: " + labCourse.totalCredits());
     }
 }
