@@ -1,45 +1,104 @@
 package STEP_SEM3.Practice_Problems;
+  import java.util.*;
+public  class Problem_1 {
 
-public final class Problem_1 {
 
-    private final String id;
-    private double savings;
+static abstract class Transaction {
+    protected double amount;
 
-    public Problem_1(String id) {
-        this.id = id;
-        this.savings = 0.0;
+    public Transaction(double amount) {
+        this.amount = amount;
     }
 
-    public String getId() {
-        return this.id;
+    public abstract double calculateAdjustedAmount();
+    public abstract String getTypeName();
+}
+
+static class CardTransaction extends Transaction {
+    public CardTransaction(double amount) {
+        super(amount);
     }
 
-    public double getSavings() {
-        return this.savings;
+    @Override
+    public double calculateAdjustedAmount() {
+        return amount * 1.02; // 2% fee
     }
 
-    public void deposit(double amount) {
-        if (amount > 0) {
-            this.savings += amount;
-            System.out.println("Deposited " + amount + " -> savings = " + (int) this.savings);
-        }
+    @Override
+    public String getTypeName() {
+        return "CARD";
+    }
+}
+
+static class WalletTransaction extends Transaction {
+    public WalletTransaction(double amount) {
+        super(amount);
     }
 
-    public void withdraw(double amount) {
-        if (amount > 0 && amount <= this.savings) {
-            this.savings -= amount;
-            System.out.println("Withdrew " + amount + " -> savings = " + (int) this.savings);
-        } else {
-            System.out.println("Withdrawal of " + amount + " rejected, savings stays " + (int) this.savings);
-        }
+    @Override
+    public double calculateAdjustedAmount() {
+        return amount * 1.01; // 1% fee
     }
 
+    @Override
+    public String getTypeName() {
+        return "WALLET";
+    }
+}
+
+static class BankTransferTransaction extends Transaction {
+    public BankTransferTransaction(double amount) {
+        super(amount);
+    }
+
+    @Override
+    public double calculateAdjustedAmount() {
+        return amount; // 0% fee
+    }
+
+    @Override
+    public String getTypeName() {
+        return "BANKTRANSFER";
+    }
+}
+
+public static class PaymentSystem {
     public static void main(String[] args) {
-        Problem_1 pb = new Problem_1("PB-1");
-        pb.deposit(100);
-        pb.withdraw(30);
-        pb.withdraw(500);
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+
+        int n = scanner.nextInt();
+        List<Transaction> transactions = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            String type = scanner.next();
+            double amount = scanner.nextDouble();
+
+            switch (type) {
+                case "CARD":
+                    transactions.add(new CardTransaction(amount));
+                    break;
+                case "WALLET":
+                    transactions.add(new WalletTransaction(amount));
+                    break;
+                case "BANKTRANSFER":
+                    transactions.add(new BankTransferTransaction(amount));
+                    break;
+            }
+        }
+
+        double total = 0.0;
+        // Uniform polymorphic processing
+        for (Transaction tx : transactions) {
+            double adjusted = tx.calculateAdjustedAmount();
+            total += adjusted;
+            System.out.printf("%s: %.2f\n", tx.getTypeName(), adjusted);
+        }
+
+        System.out.printf("Total: %.2f\n", total);
+        scanner.close();
     }
+}
 }
 
 

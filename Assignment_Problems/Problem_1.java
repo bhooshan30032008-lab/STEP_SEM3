@@ -1,36 +1,105 @@
 package STEP_SEM3.Assignment_Problems;
 
-public class Problem_1 {
-    
-    private final int maxHealth; 
-    private int health;          
+import java.util.*;
 
-    public Problem_1(int maxHealth) {
-        this.maxHealth = maxHealth;
-        this.health = maxHealth; // starts at full health[cite: 1]
+
+import java.util.*;
+
+class Problem_1 {
+abstract static class Customer {
+    protected double billAmount;
+
+    public Customer(double billAmount) {
+        this.billAmount = billAmount;
     }
 
-    public void takeDamage(int amount) {
-        if (amount <= 0) return;
-        health -= amount;
-        if (health < 0) {
-            health = 0; // clamp at 0[cite: 1]
+    public abstract double calculateFinalAmount();
+    public abstract String getType();
+}
+
+static class StudentCustomer extends Customer {
+    public StudentCustomer(double billAmount) {
+        super(billAmount);
+    }
+
+    @Override
+    public double calculateFinalAmount() {
+        return billAmount * 0.90; 
+    }
+
+    @Override
+    public String getType() {
+        return "STUDENT";
+    }
+}
+
+static class StaffCustomer extends Customer {
+    public StaffCustomer(double billAmount) {
+        super(billAmount);
+    }
+
+    @Override
+    public double calculateFinalAmount() {
+        return billAmount * 0.95; 
+    }
+
+    @Override
+    public String getType() {
+        return "STAFF";
+    }
+}
+
+static class GuestCustomer extends Customer {
+    public GuestCustomer(double billAmount) {
+        super(billAmount);
+    }
+
+    @Override
+    public double calculateFinalAmount() {
+        return billAmount + 10.0; 
+    }
+
+    @Override
+    public String getType() {
+        return "GUEST";
+    }
+}
+
+public static  class CanteenBillingCounter {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
+
+        int n = sc.nextInt();
+        List<Customer> bills = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            String type = sc.next();
+            double amount = sc.nextDouble();
+
+            switch (type) {
+                case "STUDENT":
+                    bills.add(new StudentCustomer(amount));
+                    break;
+                case "STAFF":
+                    bills.add(new StaffCustomer(amount));
+                    break;
+                case "GUEST":
+                    bills.add(new GuestCustomer(amount));
+                    break;
+            }
         }
-    }
 
-    public void heal(int amount) {
-        if (amount <= 0) return;
-        health += amount;
-        if (health > maxHealth) {
-            health = maxHealth; 
+        double grandTotal = 0.0;
+        
+        for (Customer customer : bills) {
+            double finalAmount = customer.calculateFinalAmount();
+            grandTotal += finalAmount;
+            System.out.printf("%s: %.2f\n", customer.getType(), finalAmount);
         }
-    }
 
-    public int getHealth() {
-        return health;
+        System.out.printf("Total: %.2f\n", grandTotal);
+        sc.close();
     }
-
-    public int getMaxHealth() {
-        return maxHealth;
-    }
+}
 }
