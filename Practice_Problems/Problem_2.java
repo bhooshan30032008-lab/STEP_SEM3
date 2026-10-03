@@ -1,104 +1,102 @@
 package STEP_SEM3.Practice_Problems;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.*;
-public  class Problem_2 {
-   
-   
 
-static abstract class LibraryItem {
-    protected String title;
+public class Problem_2 {
 
-    public LibraryItem(String title) {
-        this.title = title;
+    static abstract class StaffMember {
+        protected String name;
+
+        public StaffMember(String name) {
+            this.name = name;
+        }
+
+        public abstract double calculatePay();
+
+        public void printPay() {
+            System.out.printf("%s: %.2f\n", name, calculatePay());
+        }
     }
 
-    public abstract int getLoanDays();
+    static class FullTimeStaff extends StaffMember {
+        private double weeklySalary;
 
-    public String calculateDueDate(LocalDate currentDate) {
-        LocalDate dueDate = currentDate.plusDays(getLoanDays());
-        return dueDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        public FullTimeStaff(String name, double weeklySalary) {
+            super(name);
+            this.weeklySalary = weeklySalary;
+        }
+
+        @Override
+        public double calculatePay() {
+            return weeklySalary;
+        }
     }
 
-    public String getTitle() {
-        return title;
-    }
-}
+    static class HourlyStaff extends StaffMember {
+        private double hours;
+        private double rate;
 
-static class Book extends LibraryItem {
-    public Book(String title) {
-        super(title);
-    }
+        public HourlyStaff(String name, double hours, double rate) {
+            super(name);
+            this.hours = hours;
+            this.rate = rate;
+        }
 
-    @Override
-    public int getLoanDays() {
-        return 14;
-    }
-}
-
-static class DVD extends LibraryItem {
-    public DVD(String title) {
-        super(title);
-    }
-
-    @Override
-    public int getLoanDays() {
-        return 7;
-    }
-}
-
-static class Magazine extends LibraryItem {
-    public Magazine(String title) {
-        super(title);
+        @Override
+        public double calculatePay() {
+            if (hours <= 40) {
+                return hours * rate;
+            } else {
+                return (40 * rate) + ((hours - 40) * 1.5 * rate);
+            }
+        }
     }
 
-    @Override
-    public int getLoanDays() {
-        return 3;
+    static class InternStaff extends StaffMember {
+        private double stipend;
+
+        public InternStaff(String name, double stipend) {
+            super(name);
+            this.stipend = stipend;
+        }
+
+        @Override
+        public double calculatePay() {
+            return stipend;
+        }
     }
-}
 
-public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        if (!scanner.hasNextLine()) return;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
 
-        int n = Integer.parseInt(scanner.nextLine().trim());
-        LocalDate currentDate = LocalDate.parse("2023-10-26");
-        List<LibraryItem> items = new ArrayList<>();
-
-        Pattern pattern = Pattern.compile("^([A-Z]+)\\s+\"?([^\"]+)\"?$");
+        int n = sc.nextInt();
+        List<StaffMember> staffList = new ArrayList<>();
+        double totalPayroll = 0.0;
 
         for (int i = 0; i < n; i++) {
-            String line = scanner.nextLine().trim();
-            Matcher matcher = pattern.matcher(line);
-            if (matcher.find()) {
-                String type = matcher.group(1);
-                String title = matcher.group(2);
+            String type = sc.next();
+            String name = sc.next();
 
-                switch (type) {
-                    case "BOOK":
-                        items.add(new Book(title));
-                        break;
-                    case "DVD":
-                        items.add(new DVD(title));
-                        break;
-                    case "MAGAZINE":
-                        items.add(new Magazine(title));
-                        break;
-                }
+            if (type.equalsIgnoreCase("FULLTIME")) {
+                double salary = sc.nextDouble();
+                staffList.add(new FullTimeStaff(name, salary));
+            } else if (type.equalsIgnoreCase("HOURLY")) {
+                double hours = sc.nextDouble();
+                double rate = sc.nextDouble();
+                staffList.add(new HourlyStaff(name, hours, rate));
+            } else if (type.equalsIgnoreCase("INTERN")) {
+                double stipend = sc.nextDouble();
+                staffList.add(new InternStaff(name, stipend));
             }
         }
 
-        // Uniform polymorphic invocation
-        for (LibraryItem item : items) {
-            System.out.printf("%s: %s\n", item.getTitle(), item.calculateDueDate(currentDate));
+        for (StaffMember staff : staffList) {
+            staff.printPay();
+            totalPayroll += staff.calculatePay();
         }
 
-        scanner.close();
+        System.out.printf("Total Payroll: %.2f\n", totalPayroll);
+        sc.close();
     }
 }
-
-
-

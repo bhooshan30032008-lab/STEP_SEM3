@@ -1,95 +1,88 @@
 package STEP_SEM3.Assignment_Problems;
-  import java.time.LocalDate;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Problem_3 {
-    
+    abstract static class LibraryItem {
+        protected String title;
+        protected int daysLate;
 
+        public LibraryItem(String title, int daysLate) {
+            this.title = title;
+            this.daysLate = daysLate;
+        }
 
-static abstract class Subscription {
-    protected String name;
-    protected LocalDate startDate;
+        public abstract double calculateFine();
 
-    public Subscription(String name, LocalDate startDate) {
-        this.name = name;
-        this.startDate = startDate;
+        public void printFine() {
+            System.out.printf("%s: %.2f%n", title, calculateFine());
+        }
     }
 
-    public String getName() {
-        return name;
+    static class BookItem extends LibraryItem {
+        public BookItem(String title, int daysLate) {
+            super(title, daysLate);
+        }
+
+        @Override
+        public double calculateFine() {
+            return daysLate * 2.0;
+        }
     }
 
-    public abstract LocalDate getRenewalDate();
-}
+    static class DVDItem extends LibraryItem {
+        public DVDItem(String title, int daysLate) {
+            super(title, daysLate);
+        }
 
-static class BasicSubscription extends Subscription {
-    public BasicSubscription(String name, LocalDate startDate) {
-        super(name, startDate);
+        @Override
+        public double calculateFine() {
+            return Math.min(daysLate * 5.0, 50.0);
+        }
     }
 
-    @Override
-    public LocalDate getRenewalDate() {
-        return startDate.plusDays(30); 
-    }
-}
+    static class MagazineItem extends LibraryItem {
+        public MagazineItem(String title, int daysLate) {
+            super(title, daysLate);
+        }
 
-static class StandardSubscription extends Subscription {
-    public StandardSubscription(String name, LocalDate startDate) {
-        super(name, startDate);
-    }
-
-    @Override
-    public LocalDate getRenewalDate() {
-        return startDate.plusDays(90); 
-    }
-}
-
-static class PremiumSubscription extends Subscription {
-    public PremiumSubscription(String name, LocalDate startDate) {
-        super(name, startDate);
+        @Override
+        public double calculateFine() {
+            return daysLate * 1.0;
+        }
     }
 
-    @Override
-    public LocalDate getRenewalDate() {
-        return startDate.plusDays(365); 
-    }
-}
-
-public static class StreamingPlanReminder {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        if (!sc.hasNextInt()) return;
+        if (!sc.hasNextInt()) {
+            return;
+        }
 
         int n = sc.nextInt();
-        List<Subscription> subscribers = new ArrayList<>();
+        List<LibraryItem> items = new ArrayList<>();
+        double totalFines = 0.0;
 
         for (int i = 0; i < n; i++) {
-            String planType = sc.next();
-            String name = sc.next();
-            String dateStr = sc.next();
-            LocalDate startDate = LocalDate.parse(dateStr);
+            String type = sc.next();
+            String title = sc.next();
+            int days = sc.nextInt();
 
-            switch (planType) {
-                case "BASIC":
-                    subscribers.add(new BasicSubscription(name, startDate));
-                    break;
-                case "STANDARD":
-                    subscribers.add(new StandardSubscription(name, startDate));
-                    break;
-                case "PREMIUM":
-                    subscribers.add(new PremiumSubscription(name, startDate));
-                    break;
+            if (type.equalsIgnoreCase("BOOK")) {
+                items.add(new BookItem(title, days));
+            } else if (type.equalsIgnoreCase("DVD")) {
+                items.add(new DVDItem(title, days));
+            } else if (type.equalsIgnoreCase("MAGAZINE")) {
+                items.add(new MagazineItem(title, days));
             }
         }
 
-      
-        for (Subscription sub : subscribers) {
-            System.out.println(sub.getName() + ": " + sub.getRenewalDate());
+        for (LibraryItem item : items) {
+            item.printFine();
+            totalFines += item.calculateFine();
         }
 
-        sc.close();
+        System.out.printf("Total Fines: %.2f%n", totalFines);
     }
 }
-    }
-
-

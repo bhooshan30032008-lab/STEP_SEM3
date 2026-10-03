@@ -1,105 +1,105 @@
 package STEP_SEM3.Assignment_Problems;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
+public class Problem_1 {
+    abstract static class GardenPlot {
+        protected String owner;
+        protected String shape;
 
-import java.util.*;
+        public GardenPlot(String owner, String shape) {
+            this.owner = owner;
+            this.shape = shape;
+        }
 
-class Problem_1 {
-abstract static class Customer {
-    protected double billAmount;
+        public abstract double calculateArea();
 
-    public Customer(double billAmount) {
-        this.billAmount = billAmount;
+        public void printReport() {
+            System.out.printf("%s (%s): %.2f\n", owner, shape, calculateArea());
+        }
     }
 
-    public abstract double calculateFinalAmount();
-    public abstract String getType();
-}
+    static class CircularPlot extends GardenPlot {
+        private double radius;
 
-static class StudentCustomer extends Customer {
-    public StudentCustomer(double billAmount) {
-        super(billAmount);
+        public CircularPlot(String owner, double radius) {
+            super(owner, "CIRCLE");
+            this.radius = radius;
+        }
+
+        @Override
+        public double calculateArea() {
+            return Math.PI * radius * radius;
+        }
     }
 
-    @Override
-    public double calculateFinalAmount() {
-        return billAmount * 0.90; 
+    static class RectangularPlot extends GardenPlot {
+        private double length;
+        private double width;
+
+        public RectangularPlot(String owner, double length, double width) {
+            super(owner, "RECTANGLE");
+            this.length = length;
+            this.width = width;
+        }
+
+        @Override
+        public double calculateArea() {
+            return length * width;
+        }
     }
 
-    @Override
-    public String getType() {
-        return "STUDENT";
-    }
-}
+    static class TriangularPlot extends GardenPlot {
+        private double base;
+        private double height;
 
-static class StaffCustomer extends Customer {
-    public StaffCustomer(double billAmount) {
-        super(billAmount);
-    }
+        public TriangularPlot(String owner, double base, double height) {
+            super(owner, "TRIANGLE");
+            this.base = base;
+            this.height = height;
+        }
 
-    @Override
-    public double calculateFinalAmount() {
-        return billAmount * 0.95; 
-    }
-
-    @Override
-    public String getType() {
-        return "STAFF";
-    }
-}
-
-static class GuestCustomer extends Customer {
-    public GuestCustomer(double billAmount) {
-        super(billAmount);
+        @Override
+        public double calculateArea() {
+            return 0.5 * base * height;
+        }
     }
 
-    @Override
-    public double calculateFinalAmount() {
-        return billAmount + 10.0; 
-    }
-
-    @Override
-    public String getType() {
-        return "GUEST";
-    }
-}
-
-public static  class CanteenBillingCounter {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        if (!sc.hasNextInt()) return;
+        if (!sc.hasNextInt()) {
+            return;
+        }
 
         int n = sc.nextInt();
-        List<Customer> bills = new ArrayList<>();
+        List<GardenPlot> plots = new ArrayList<>();
+        double totalArea = 0.0;
 
         for (int i = 0; i < n; i++) {
-            String type = sc.next();
-            double amount = sc.nextDouble();
+            String shapeType = sc.next();
+            String owner = sc.next();
 
-            switch (type) {
-                case "STUDENT":
-                    bills.add(new StudentCustomer(amount));
-                    break;
-                case "STAFF":
-                    bills.add(new StaffCustomer(amount));
-                    break;
-                case "GUEST":
-                    bills.add(new GuestCustomer(amount));
-                    break;
+            if (shapeType.equalsIgnoreCase("CIRCLE")) {
+                double r = sc.nextDouble();
+                plots.add(new CircularPlot(owner, r));
+            } else if (shapeType.equalsIgnoreCase("RECTANGLE")) {
+                double l = sc.nextDouble();
+                double w = sc.nextDouble();
+                plots.add(new RectangularPlot(owner, l, w));
+            } else if (shapeType.equalsIgnoreCase("TRIANGLE")) {
+                double b = sc.nextDouble();
+                double h = sc.nextDouble();
+                plots.add(new TriangularPlot(owner, b, h));
             }
         }
 
-        double grandTotal = 0.0;
-        
-        for (Customer customer : bills) {
-            double finalAmount = customer.calculateFinalAmount();
-            grandTotal += finalAmount;
-            System.out.printf("%s: %.2f\n", customer.getType(), finalAmount);
+        for (GardenPlot plot : plots) {
+            plot.printReport();
+            totalArea += plot.calculateArea();
         }
 
-        System.out.printf("Total: %.2f\n", grandTotal);
-        sc.close();
+        System.out.printf("Total Area: %.2f\n", totalArea);
     }
-}
 }

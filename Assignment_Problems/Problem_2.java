@@ -1,162 +1,104 @@
-package STEP_SEM3.Assignment_Problems; 
-import java.util.*;
+package STEP_SEM3.Assignment_Problems;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Problem_2 {
-    abstract static class Customer {
-        protected double billAmount;
+    abstract static class Staff {
+        protected String name;
 
-        public Customer(double billAmount) {
-            this.billAmount = billAmount;
+        public Staff(String name) {
+            this.name = name;
         }
 
-        public abstract double calculateFinalAmount();
-        public abstract String getType();
-    }
+        public abstract double calculatePay();
 
-    static class StudentCustomer extends Customer {
-        public StudentCustomer(double billAmount) {
-            super(billAmount);
-        }
-
-        @Override
-        public double calculateFinalAmount() {
-            return billAmount * 0.90; // 10% discount
-        }
-
-        @Override
-        public String getType() {
-            return "STUDENT";
+        public void printPay() {
+            System.out.printf("%s: %.2f%n", name, calculatePay());
         }
     }
 
-    static class StaffCustomer extends Customer {
-        public StaffCustomer(double billAmount) {
-            super(billAmount);
+    static class FullTimeStaff extends Staff {
+        private double weeklySalary;
+
+        public FullTimeStaff(String name, double weeklySalary) {
+            super(name);
+            this.weeklySalary = weeklySalary;
         }
 
         @Override
-        public double calculateFinalAmount() {
-            return billAmount * 0.95; 
+        public double calculatePay() {
+            return weeklySalary;
+        }
+    }
+
+    static class HourlyStaff extends Staff {
+        private double hours;
+        private double rate;
+
+        public HourlyStaff(String name, double hours, double rate) {
+            super(name);
+            this.hours = hours;
+            this.rate = rate;
         }
 
         @Override
-        public String getType() {
-            return "STAFF";
+        public double calculatePay() {
+            if (hours <= 40) {
+                return hours * rate;
+            } else {
+                return (40 * rate) + ((hours - 40) * 1.5 * rate);
+            }
         }
     }
 
-    static class GuestCustomer extends Customer {
-        public GuestCustomer(double billAmount) {
-            super(billAmount);
+    static class InternStaff extends Staff {
+        private double stipend;
+
+        public InternStaff(String name, double stipend) {
+            super(name);
+            this.stipend = stipend;
         }
 
         @Override
-        public double calculateFinalAmount() {
-            return billAmount + 10.0;
-        }
-
-        @Override
-        public String getType() {
-            return "GUEST";
+        public double calculatePay() {
+            return stipend;
         }
     }
 
-abstract static class Vehicle {
-    protected int hours;
-
-    public Vehicle(int hours) {
-        this.hours = hours;
-    }
-
-    public abstract double calculateCharge();
-    public abstract String getType();
-}
-
-static class Bike extends Vehicle {
-    public Bike(int hours) {
-        super(hours);
-    }
-
-    @Override
-    public double calculateCharge() {
-        return hours * 10.0;
-    }
-
-    @Override
-    public String getType() {
-        return "BIKE";
-    }
-}
-
-static class Car extends Vehicle {
-    public Car(int hours) {
-        super(hours);
-    }
-
-    @Override
-    public double calculateCharge() {
-       
-        return 30.0 + Math.max(0, hours - 1) * 20.0;
-    }
-
-    @Override
-    public String getType() {
-        return "CAR";
-    }
-}
-
-static class Truck extends Vehicle {
-    public Truck(int hours) {
-        super(hours);
-    }
-
-    @Override
-    public double calculateCharge() {
-      
-        return Math.max(100.0, hours * 50.0);
-    }
-
-    @Override
-    public String getType() {
-        return "TRUCK";
-    }
-}
-
-static class ParkingChargeCalculator {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        if (!sc.hasNextInt()) return;
+        if (!sc.hasNextInt()) {
+            return;
+        }
 
         int n = sc.nextInt();
-        List<Vehicle> vehicles = new ArrayList<>();
+        List<Staff> staffList = new ArrayList<>();
+        double totalPayroll = 0.0;
 
         for (int i = 0; i < n; i++) {
             String type = sc.next();
-            int hours = sc.nextInt();
+            String name = sc.next();
 
-            switch (type) {
-                case "BIKE":
-                    vehicles.add(new Bike(hours));
-                    break;
-                case "CAR":
-                    vehicles.add(new Car(hours));
-                    break;
-                case "TRUCK":
-                    vehicles.add(new Truck(hours));
-                    break;
+            if (type.equalsIgnoreCase("FULLTIME")) {
+                double salary = sc.nextDouble();
+                staffList.add(new FullTimeStaff(name, salary));
+            } else if (type.equalsIgnoreCase("HOURLY")) {
+                double hours = sc.nextDouble();
+                double rate = sc.nextDouble();
+                staffList.add(new HourlyStaff(name, hours, rate));
+            } else if (type.equalsIgnoreCase("INTERN")) {
+                double stipend = sc.nextDouble();
+                staffList.add(new InternStaff(name, stipend));
             }
         }
 
-        double grandTotal = 0.0;
-        // Process polymorphically
-        for (Vehicle v : vehicles) {
-            double charge = v.calculateCharge();
-            grandTotal += charge;
-            System.out.printf("%s: %.2f\n", v.getType(), charge);
+        for (Staff staff : staffList) {
+            staff.printPay();
+            totalPayroll += staff.calculatePay();
         }
 
-        System.out.printf("Total: %.2f\n", grandTotal);
-        sc.close();
+        System.out.printf("Total Payroll: %.2f%n", totalPayroll);
     }
-}
 }

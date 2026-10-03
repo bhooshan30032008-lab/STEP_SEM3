@@ -1,104 +1,117 @@
 package STEP_SEM3.Practice_Problems;
-  import java.util.*;
-public  class Problem_1 {
 
+import java.util.*;
 
-static abstract class Transaction {
-    protected double amount;
+public class Problem_1 {
 
-    public Transaction(double amount) {
-        this.amount = amount;
+    static abstract class Plot {
+        protected String owner;
+
+        public Plot(String owner) {
+            this.owner = owner;
+        }
+
+        public abstract double getArea();
+        public abstract String getShape();
+
+        public void printReport() {
+            System.out.printf("%s (%s): %.2f\n", owner, getShape(), getArea());
+        }
     }
 
-    public abstract double calculateAdjustedAmount();
-    public abstract String getTypeName();
-}
+    static class CirclePlot extends Plot {
+        private double radius;
 
-static class CardTransaction extends Transaction {
-    public CardTransaction(double amount) {
-        super(amount);
+        public CirclePlot(String owner, double radius) {
+            super(owner);
+            this.radius = radius;
+        }
+
+        @Override
+        public double getArea() {
+            return Math.PI * radius * radius;
+        }
+
+        @Override
+        public String getShape() {
+            return "CIRCLE";
+        }
     }
 
-    @Override
-    public double calculateAdjustedAmount() {
-        return amount * 1.02; // 2% fee
+    static class RectanglePlot extends Plot {
+        private double length;
+        private double width;
+
+        public RectanglePlot(String owner, double length, double width) {
+            super(owner);
+            this.length = length;
+            this.width = width;
+        }
+
+        @Override
+        public double getArea() {
+            return length * width;
+        }
+
+        @Override
+        public String getShape() {
+            return "RECTANGLE";
+        }
     }
 
-    @Override
-    public String getTypeName() {
-        return "CARD";
-    }
-}
+    static class TrianglePlot extends Plot {
+        private double base;
+        private double height;
 
-static class WalletTransaction extends Transaction {
-    public WalletTransaction(double amount) {
-        super(amount);
-    }
+        public TrianglePlot(String owner, double base, double height) {
+            super(owner);
+            this.base = base;
+            this.height = height;
+        }
 
-    @Override
-    public double calculateAdjustedAmount() {
-        return amount * 1.01; // 1% fee
-    }
+        @Override
+        public double getArea() {
+            return 0.5 * base * height;
+        }
 
-    @Override
-    public String getTypeName() {
-        return "WALLET";
-    }
-}
-
-static class BankTransferTransaction extends Transaction {
-    public BankTransferTransaction(double amount) {
-        super(amount);
+        @Override
+        public String getShape() {
+            return "TRIANGLE";
+        }
     }
 
-    @Override
-    public double calculateAdjustedAmount() {
-        return amount; // 0% fee
-    }
-
-    @Override
-    public String getTypeName() {
-        return "BANKTRANSFER";
-    }
-}
-
-public static class PaymentSystem {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        if (!scanner.hasNextInt()) return;
+        Scanner sc = new Scanner(System.in);
+        if (!sc.hasNextInt()) return;
 
-        int n = scanner.nextInt();
-        List<Transaction> transactions = new ArrayList<>();
+        int n = sc.nextInt();
+        List<Plot> plots = new ArrayList<>();
+        double totalArea = 0.0;
 
         for (int i = 0; i < n; i++) {
-            String type = scanner.next();
-            double amount = scanner.nextDouble();
+            String shape = sc.next();
+            String owner = sc.next();
 
-            switch (type) {
-                case "CARD":
-                    transactions.add(new CardTransaction(amount));
-                    break;
-                case "WALLET":
-                    transactions.add(new WalletTransaction(amount));
-                    break;
-                case "BANKTRANSFER":
-                    transactions.add(new BankTransferTransaction(amount));
-                    break;
+            if (shape.equalsIgnoreCase("CIRCLE")) {
+                double radius = sc.nextDouble();
+                plots.add(new CirclePlot(owner, radius));
+            } else if (shape.equalsIgnoreCase("RECTANGLE")) {
+                double length = sc.nextDouble();
+                double width = sc.nextDouble();
+                plots.add(new RectanglePlot(owner, length, width));
+            } else if (shape.equalsIgnoreCase("TRIANGLE")) {
+                double base = sc.nextDouble();
+                double height = sc.nextDouble();
+                plots.add(new TrianglePlot(owner, base, height));
             }
         }
 
-        double total = 0.0;
-        // Uniform polymorphic processing
-        for (Transaction tx : transactions) {
-            double adjusted = tx.calculateAdjustedAmount();
-            total += adjusted;
-            System.out.printf("%s: %.2f\n", tx.getTypeName(), adjusted);
+        for (Plot plot : plots) {
+            plot.printReport();
+            totalArea += plot.getArea();
         }
 
-        System.out.printf("Total: %.2f\n", total);
-        scanner.close();
+        System.out.printf("Total Area: %.2f\n", totalArea);
+        sc.close();
     }
 }
-}
-
-
